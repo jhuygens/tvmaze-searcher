@@ -9,9 +9,11 @@ import (
 var tvmazeSearcher = Searcher{}
 
 func init() {
-	err := searcher.RegisterSearcher(config.GetString("searchers.tvmaze"), tvmazeSearcher)
+	name := config.GetString("searchers.tvmaze")
+	err := searcher.RegisterSearcher(name, tvmazeSearcher)
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
+	log.Infof("Searcher %v has been register", name)
 }

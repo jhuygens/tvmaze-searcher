@@ -15,6 +15,7 @@ func Test_searchTVMAZEServiceItems(t *testing.T) {
 	// query["country"] = "GT"
 	type args struct {
 		queryParams map[string]string
+		resource    string
 	}
 	tests := []struct {
 		name    string
@@ -31,7 +32,7 @@ func Test_searchTVMAZEServiceItems(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := searchTVMAZEServiceItems(tt.args.queryParams)
+			got, err := searchTVMAZEServiceItems(tt.args.queryParams, tt.args.resource)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("searchTVMAZEServiceItems() error = %v, wantErr %v", err, tt.wantErr)
 				return
