@@ -24,12 +24,24 @@ func (s Searcher) Search(filter searcher.Filter) ([]searcher.Item, error) {
 	}
 	var items []searcher.Item
 	for _, resource := range filter.Types {
-		if resource == "show" {
+		if resource == "show" || resource == "all" {
 			for _, name := range filter.Name {
 				queryParams := make(map[string]string)
 				queryParams["limit"] = "20"
 				queryParams["q"] = name.Value
-				results, err := searchTVMAZEServiceItems(queryParams)
+				results, err := searchTVMAZEServiceItems(queryParams, resource)
+				if err != nil {
+					log.Error(err)
+				}
+				items = append(items, results...)
+			}
+		}
+		if resource == "episode" || resource == "all" {
+			for _, name := range filter.Name {
+				queryParams := make(map[string]string)
+				queryParams["limit"] = "20"
+				queryParams["q"] = fmt.Sprintf("%v&embed=episodes", name.Value)
+				results, err := searchTVMAZEServiceItems(queryParams, resource)
 				if err != nil {
 					log.Error(err)
 				}
@@ -40,7 +52,7 @@ func (s Searcher) Search(filter searcher.Filter) ([]searcher.Item, error) {
 	return items, nil
 }
 
-func searchTVMAZEServiceItems(queryParams map[string]string) ([]searcher.Item, error) {
+func searchTVMAZEServiceItems(queryParams map[string]string, resource string) ([]searcher.Item, error) {
 	resquest := rest.RequestInfo{
 		Method:      http.MethodGet,
 		Endpoint:    config.GetString("integrations.tvmaze.endpoint"),
@@ -61,7 +73,7 @@ func searchTVMAZEServiceItems(queryParams map[string]string) ([]searcher.Item, e
 		items = append(
 			items,
 			searcher.Item{
-				Type:    "show",
+				Type:    resource,
 				Library: config.GetString("searchers.tvmaze"),
 				Name:    show.Name,
 				Artwork: show.Image.Medium,

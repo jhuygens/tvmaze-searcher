@@ -1,9 +1,8 @@
 package tvmaze
 
 import (
-	"log"
-
 	"github.com/jgolang/config"
+	"github.com/jgolang/log"
 	searcher "github.com/jhuygens/searcher-engine"
 )
 

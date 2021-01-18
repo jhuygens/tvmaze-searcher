@@ -42,3 +42,41 @@ func Test_searchTVMAZEServiceItems(t *testing.T) {
 		})
 	}
 }
+
+func TestSearcher_Search(t *testing.T) {
+	type args struct {
+		filter searcher.Filter
+	}
+	tests := []struct {
+		name    string
+		s       Searcher
+		args    args
+		want    []searcher.Item
+		wantErr bool
+	}{
+		{
+			name: "prueba inicial",
+			s:    Searcher{},
+			args: args{
+				filter: searcher.Filter{
+					Name:   []searcher.FieldValue{{Value: "hola"}, {Value: "como"}},
+					Artist: []searcher.FieldValue{{Value: "nirvana"}},
+					Types:  []string{"show", "track"},
+				},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := Searcher{}
+			got, err := s.Search(tt.args.filter)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Searcher.Search() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Searcher.Search() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
