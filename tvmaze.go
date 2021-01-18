@@ -28,7 +28,8 @@ func (s Searcher) Search(filter searcher.Filter) ([]searcher.Item, error) {
 			for _, name := range filter.Name {
 				queryParams := make(map[string]string)
 				queryParams["limit"] = "20"
-				queryParams["q"] = fmt.Sprintf("%v&page=0", name.Value)
+				queryParams["q"] = name.Value
+				queryParams["page"] = "0"
 				results, err := searchTVMAZEServiceItems(queryParams, "show")
 				if err != nil {
 					log.Error(err)
@@ -40,7 +41,9 @@ func (s Searcher) Search(filter searcher.Filter) ([]searcher.Item, error) {
 			for _, name := range filter.Name {
 				queryParams := make(map[string]string)
 				queryParams["limit"] = "20"
-				queryParams["q"] = fmt.Sprintf("%v&embed=episodes&page=0", name.Value)
+				queryParams["q"] = name.Value
+				queryParams["embed"] = "episodes"
+				queryParams["page"] = "0"
 				results, err := searchTVMAZEServiceItems(queryParams, "episode")
 				if err != nil {
 					log.Error(err)
