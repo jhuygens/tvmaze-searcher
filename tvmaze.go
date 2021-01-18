@@ -7,6 +7,7 @@ import (
 
 	"github.com/jgolang/config"
 	"github.com/jgolang/consumer/rest"
+	"github.com/jgolang/log"
 	searcher "github.com/jhuygens/searcher-engine"
 )
 
@@ -18,8 +19,25 @@ type Searcher struct{}
 
 // Search doc ...
 func (s Searcher) Search(filter searcher.Filter) ([]searcher.Item, error) {
-
-	return nil, nil
+	if len(filter.Types) == 0 {
+		filter.Types = append(filter.Types, "show")
+	}
+	var items []searcher.Item
+	for _, resource := range filter.Types {
+		if resource == "show" {
+			for _, name := range filter.Name {
+				queryParams := make(map[string]string)
+				queryParams["limit"] = "20"
+				queryParams["q"] = name.Value
+				results, err := searchTVMAZEServiceItems(queryParams)
+				if err != nil {
+					log.Error(err)
+				}
+				items = append(items, results...)
+			}
+		}
+	}
+	return items, nil
 }
 
 func searchTVMAZEServiceItems(queryParams map[string]string) ([]searcher.Item, error) {
